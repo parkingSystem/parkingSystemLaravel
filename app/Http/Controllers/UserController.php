@@ -21,10 +21,12 @@ class UserController extends Controller
         
         $validator = Validator::make($input, [
             'phone' => 'required',
-            'password' => 'required'
+            'password' => 'required',
+            'carNumber' => 'required',
+            'carModel' => 'required'
         ]);
 
-        //Check if this request contains phone and password
+        //Check if this request contains phone, password,carModel and CarNumber
         if($validator->fails()){
             return response()->json([
                 'success'=>false, 
@@ -44,25 +46,30 @@ class UserController extends Controller
                 'data'=>new stdClass()
             ],200);
         }
+        
+        $carNumbers = User::where('carNumber','=',$request->carNumber)->count();
+        if($carNumbers>0){
+            return response()->json([
+                'success'=>false, 
+                'message'=>'Car number exist', 
+                'data'=>new stdClass()
+            ],200);        
+        }
         //create user
         $user = User::create([
             'phone' => $request ->phone,
             'password' =>$pwd,
             'token' => $token,
-            'carModel'=>'',
-            'carNumber'=>'',
+            'carModel'=>$request->carModel,
+            'carNumber'=>$request->carNumber,
             'wallet'=>'1000'
         ]);
-        //response data
-        $user_for_response = [
-            'id'=>$user->id,
-            'phone'=>$user->phone,
-            'token'=>$token,
-        ];
+        
+        
         return response()->json([
             'success'=>true, 
             'message'=>'Registrate Sucessfully', 
-            'data'=>$user_for_response
+            'data'=>$user
         ],200);
     }
     public function login(Request $request){
