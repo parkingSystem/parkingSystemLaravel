@@ -22,7 +22,6 @@ class UserImageController extends Controller
             'id' => 'required',
             'parkId' => 'required',
             'comingImage' => 'required',
-            'comingTime' => 'required',
         ]);
         if($validator->fails()){
             return response()->json([
@@ -49,7 +48,7 @@ class UserImageController extends Controller
             'parkId' => $request->parkId,
             'comingImage' => 'uploads/logos/'. $filename,
             'outgoingImage' => '',
-            'comingTime' => $request->comingTime,
+            'comingTime' => date("Y-m-d H:i:s"),
             'outgoingTime' => '',
         ]);
 
@@ -66,7 +65,6 @@ class UserImageController extends Controller
         $validator = Validator::make($input, [
             'imageId' => 'required',
             'outgoingImage' => 'required',
-            'outgoingTime' => 'required',
         ]);
         if($validator->fails()){
             return response()->json([
@@ -92,7 +90,7 @@ class UserImageController extends Controller
         if($userImage->count()>0){
             $userImage = $userImage->first();
             $userImage ->outgoingImage = 'uploads/logos/'. $filename;
-            $userImage ->outgoingTime = $request->outgoingTime;
+            $userImage ->date("Y-m-d H:i:s");
             $userImage ->save();
         }else{
             return response()->json([
