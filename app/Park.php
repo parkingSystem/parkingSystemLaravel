@@ -8,6 +8,7 @@ class Park extends Model
 {
     protected $table = 'parks';
     protected $fillable = [
-        'id','name', 'price','places','occupied_places','longtitude','latitude','description'
+        'id','name', 'price','places','occupied_places',
+        'longitude','latitude','description'
     ];
 }

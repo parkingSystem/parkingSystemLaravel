@@ -21,15 +21,14 @@ Route::post('createUser',"UserController@createUser");
 Route::post('login',"UserController@login");
 Route::get('getUserInfo',"UserController@getUserInfo");
 Route::get('getAllOrders',"UserController@getAllOrders");
+Route::get('getUserStatus',"UserController@getUserStatus");
 Route::patch('updateUser',"UserController@updateUser");
 Route::patch('updateBalance',"UserController@updateBalance");
 //park routes
 Route::get('getAllParks',"ParkController@getAllParks");
 Route::get('getPark',"ParkController@getPark");
-
-Route::post('saveIncomingImage',"UserImageController@saveIncomingImage");
-Route::post('saveOutgoingImage',"UserImageController@saveOutgoingImage");
 //order routes
 Route::post('createOrder',"OrderController@createOrder");
+Route::post('cancelOrder',"OrderController@cancelOrder");
 Route::post('validateIn',"OrderController@validateIn");
 Route::post('validateOut',"OrderController@validateOut");

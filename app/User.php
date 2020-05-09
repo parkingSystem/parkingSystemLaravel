@@ -9,9 +9,9 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     use Notifiable;
-
     protected $table = 'users';
     protected $fillable = [
-        'id','phone', 'password','token','carModel','carNumber','wallet'
+        'id','phone', 'password','token','carModel',
+        'carNumber','wallet'
     ];
 }

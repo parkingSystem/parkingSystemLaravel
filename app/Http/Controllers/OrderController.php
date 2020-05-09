@@ -14,7 +14,6 @@ class OrderController extends Controller
 {
     public function createOrder(Request $request){
         $input = $request->all();
-
         //check if request contains userId token and parkId
         $validator = Validator::make($input, [
             'userId' => 'required',
@@ -40,7 +39,6 @@ class OrderController extends Controller
         //check token of user
         $user = $user->first();
         if ($user->token!=$request->token) {
-            //return response($this::message("Incorect Password",400),400);
             return response()->json([
                 'success'=>false, 
                 'message'=>'Token Error', 
@@ -62,7 +60,6 @@ class OrderController extends Controller
                 'data'=>new stdClass()
             ],200);
         }
-        //get park and get all occupied places.check if park has free places 
         $park = $parks->first();
         $oc_place = (int)($park->occupied_places);
         $all_place = (int)($park->places);
@@ -74,7 +71,7 @@ class OrderController extends Controller
             ],200);
         }else{
             //if it is has a places reserve for this user 1 place
-            $date = date("Y-m-d H:i:s", strtotime(sprintf("+%d hours", 24)));
+            $date = date("Y-m-d H:i:s",strtotime(sprintf("+%d hours", 24)));
             $order = Order::create([
                 'userId'=>$request->userId,
                 'parkId'=>$request->parkId,
@@ -89,9 +86,53 @@ class OrderController extends Controller
             ],200);
         }
     }
+    public function cancelOrder(Request $request){
+        $input = $request->all();
+        //check if request contains userId token and parkId
+        $validator = Validator::make($input, [
+            'userId' => 'required',
+            'token' => 'required',
+            'orderId' => 'required',
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'success'=>false, 
+                'message'=>'Bad Request', 
+                'data'=>new stdClass()
+            ],200);       
+        }
+        $user = User::where("id",$request->userId);
+        //check if user is registrate
+        if($user->count()==0){
+            return response()->json([
+                'success'=>false, 
+                'message'=>'Id Error', 
+                'data'=>new stdClass()
+            ],200);
+        }
+        //check token of user
+        $user = $user->first();
+        if ($user->token!=$request->token) {
+            return response()->json([
+                'success'=>false, 
+                'message'=>'Token Error', 
+                'data'=>new stdClass()
+            ],200);
+        }
+        $order = Order::where('id',$request->orderId)->first();
+        $park = Park::where('id',$order->parkId)->first();
+        $park->occupied_places = $park->occupied_places-1;
+        $park ->save();
+        $order->delete();
+        return response()->json([
+            'success'=>true, 
+            'message'=>'Canceled Sucessfully', 
+            'data'=>new stdClass()
+        ],200);
+    }
+
     public function validateIn(Request $request){
         $input = $request->all();
-
         //check if request contains carNumber token and parkId
         $validator = Validator::make($input, [
             'carNumber' => 'required',
@@ -105,7 +146,8 @@ class OrderController extends Controller
             ],200);       
         }
         //get user by carNumber
-        $user = User::where("carNumber",$request->carNumber);
+        $user = User::where("carNumber",
+        $request->carNumber);
         if($user->count()<=0){
             return response()->json([
                 'success'=>false, 
@@ -134,7 +176,8 @@ class OrderController extends Controller
                 'data'=>new stdClass()
             ],200);
         }
-        //create order param for this user and save incoming time
+        //create order param for this user and save
+        // incoming time
         $park = $parks->first();
         $OrderParam = OrderParam::create([
             'userId'=>$user->id,
@@ -152,7 +195,8 @@ class OrderController extends Controller
     public function validateOut(Request $request){
         $input = $request->all();
 
-        //check if request contains carNumber token and parkId
+        //check if request contains carNumber 
+        //token and parkId
         $validator = Validator::make($input, [
             'carNumber' => 'required',
             'parkId' => 'required',

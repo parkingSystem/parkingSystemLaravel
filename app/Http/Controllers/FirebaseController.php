@@ -15,7 +15,7 @@ class FirebaseController extends Controller
 		//topic need to know to which user to send message
 		$topic = $id;
 		//factory need to connect firebase
-        $factory = (new Factory())->withServiceAccount(__DIR__.'/parkingsystem-f0e17-firebase-adminsdk-mpz8z-bb24f203c6.json');
+		$factory = (new Factory())->withServiceAccount(__DIR__.'/parkingsystem-f0e17-firebase-adminsdk-mpz8z-bb24f203c6.json');
 		$messaging = ($factory)->createMessaging();
 		//creating message
 		$message = CloudMessage::fromArray([

@@ -21,8 +21,6 @@ class ParkController extends Controller
 {
     public function getAllParks(Request $request){
         $input = $request->all();
-
-
         $validator = Validator::make($input, [
             'id' => 'required',
             'token' => 'required'
@@ -47,7 +45,6 @@ class ParkController extends Controller
         //check if token is correct
         $user = $user->first();
         if ($user->token!=$request->token) {
-            //return response($this::message("Incorect Password",400),400);
             return response()->json([
                 'success'=>false, 
                 'message'=>'Token Error', 
@@ -56,18 +53,15 @@ class ParkController extends Controller
         }
         //take all parks and return it
         $park = Park::all();
-        
         return response()->json([
             'success'=>true, 
             'message'=>'Token Success', 
             'data'=>$park
-        ],200);
-        
+        ],200);   
     } 
     
     public function getPark(Request $request){
         $input = $request->all();
-
         //check if request contains id and token
         $validator = Validator::make($input, [
             'id' => 'required',
